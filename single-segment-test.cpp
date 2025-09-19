@@ -13,17 +13,13 @@ const int DIGIT_TO_SEGMENT[10][7] = {
   {1, 1, 1, 1, 1, 1, 1}, //8
   {1, 1, 1, 1, 0, 1, 1}  //9
 } ;
-int SERVO_OFF = 60;
-int SERVO_ON = 180;
+int SERVO_OFF = 160;
+int SERVO_ON = 30;
 
 void setup() {
   // put your setup code here, to run once:
   for (int i=0; i<7; i++) {
     servos[i].attach(SERVO_PINS[i]);
-    servos[i].write(SERVO_OFF);
-    delay(1000);
-    servos[i].write(SERVO_ON);
-    delay(1000);
     servos[i].write(SERVO_OFF);
   }
 }
@@ -31,15 +27,19 @@ void setup() {
 void showDigits(int digit) {
   for (int s=0; s<7; s++) {
     int state = DIGIT_TO_SEGMENT[digit][s];
-    servos[s].write(state ? SERVO_ON : SERVO_OFF);
-    delay(1000);
+    if (state == 1) {
+      servos[s].write(SERVO_ON);
+    } 
+    else {
+      servos[s].write(SERVO_OFF);
+    }
   }
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   for (int d=0; d<=9; d++) {
-  showDigits[d];
-  delay(2500);
+  showDigits(d);
+  delay(1000);
   }
 }
