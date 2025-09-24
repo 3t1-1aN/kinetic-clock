@@ -1,34 +1,51 @@
+#include <WiFiS3.h>
+#include <WiFiUdp.h>
 #include <NTPClient.h>
-#include <WiFiNINA.h>
+#include "RTC.h"
 
-// Your network credentials
 char ssid[] = "YOUR_SSID";
 char pass[] = "YOUR_PASSWORD";
 
-// --- NTP Client Setup ---
-const long utcOffsetInSeconds = 0; // For UTC time, 0 offset
-// The default NTP server is time.nist.gov
-NTPClient ntpClient(WiFi.getMode(), "time.nist.gov", utcOffsetInSeconds);
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org", 0, 60000); // sync every 60s
 
 void setup() {
-  Serial.begin(9600);
-  while (!Serial);
+  Serial.begin(115200);
 
+  // connect to WiFi
   WiFi.begin(ssid, pass);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Connecting to WiFi...");
+    delay(500);
+    Serial.print(".");
   }
-  Serial.println("Connected to WiFi!");
 
-  ntpClient.begin();
+  // start NTP
+  timeClient.begin();
+
+  // sync RTC once at startup
+  updateRTC();
 }
 
 void loop() {
-  ntpClient.update(); // Update the time from the NTP server
-  // The time is now available in ntpClient.getFormattedTime()
-  Serial.print("Current Time: ");
-  Serial.println(ntpClient.getFormattedTime());
+  static unsigned long lastSync = 0;
 
-  delay(5000); // Update time every 5 seconds
+  if (millis() - lastSync > 60000) { // every minute
+    updateRTC();
+    lastSync = millis();
+  }
+
+  // read RTC for "always-on" time
+  RTCTime currentTime;
+  RTC.getTime(currentTime);
+  Serial.println(currentTime.toString());
+  delay(1000);
+}
+
+void updateRTC() {
+  if (timeClient.update()) {
+    unsigned long epoch = timeClient.getEpochTime();
+    RTCTime newTime(epoch);
+    RTC.setTime(newTime);
+    Serial.println("RTC synced!");
+  }
 }
