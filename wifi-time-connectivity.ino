@@ -1,16 +1,11 @@
-// Include the RTC library
 #include "RTC.h"
-
-//Include the NTP library
 #include <NTPClient.h>
-
 #include <WiFiS3.h>
 #include <WiFiUdp.h>
 #include "arduino_secrets.h" 
 
-
-char ssid[] = SECRET_SSID; 
-char pass[] = SECRET_PASS;
+char ssid[] = "Mechatronics W183"; 
+char pass[] = "Mechatronics183";
 
 int wifiStatus = WL_IDLE_STATUS;
 WiFiUDP Udp; // A UDP instance to let us send and receive packets over UDP
