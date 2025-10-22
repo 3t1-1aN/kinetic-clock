@@ -27,12 +27,7 @@ void setup() {
 void showDigits(int digit) {
   for (int s=0; s<7; s++) {
     int state = DIGIT_TO_SEGMENT[digit][s];
-    if (state == 1) {
-      servos[s].write(SERVO_ON);
-    } 
-    else {
-      servos[s].write(SERVO_OFF);
-    }
+    servos[s].write(DIGIT_TO_SEGMENT[digit][s] ? SERVO_ON : SERVO_OFF);
   }
 }
 
