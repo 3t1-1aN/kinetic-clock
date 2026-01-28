@@ -4,6 +4,12 @@
 
 ![Kinetic Clock Project](https://github.com/user-attachments/assets/700a77c6-e80a-44d7-ac20-5e9436f11dc5)
 
+### 2 months later...
+
+![Kinetic Clock Project front](https://github.com/user-attachments/assets/b48bde54-1429-4b01-8a69-73d9434bc8bd)
+
+![Kinetic Clock Project back](https://github.com/user-attachments/assets/a01bc7a2-b913-4124-be9c-ac0fb6765c09)
+
 ## Project Overview
 
 The kinetic-clock is an innovative mechanical version of the classic digital clock that combines traditional digital clock aesthetics with modern mechanical engineering principles.
@@ -14,7 +20,7 @@ Inspired by instructables, this project reimagines a standard 7-segment digital 
 
 - **3D-printed segments** that physically move to display time
 - **Servo motors** controlling individual segments
-- **Real-time data** synchronized across multiple digits
+- **Real-time data** connects to wifi, relays that time onto the built-in RTC clock, and then the time is broken down and parsed into the different segments
 - **Mechanical engineering** combined with digital display design
 - **Custom control system** for coordinating segment movement
 
