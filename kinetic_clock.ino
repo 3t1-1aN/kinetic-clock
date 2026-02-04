@@ -44,36 +44,32 @@ char pass[] = "Mechatronics183";
 WiFiUDP Udp;
 NTPClient timeClient(Udp, "pool.ntp.org", -8 * 3600);
 unsigned long lastSync = 0;
-const unsigned long syncInterval = 3600000; // 1 hour
+const unsigned long syncInterval = 600000; // 10 minutes
 
 /* ===================== DISPLAY FUNCTIONS ===================== */
 
 void showDigit(Adafruit_PWMServoDriver &pwm, int digitIndex, int value) {
-  // Safety guard: prevents bus faults
   if (value < 0 || value > 9) {
-    Serial.print("Invalid digit value: ");
-    Serial.println(value);
+    Serial.print("showDigit: invalid value "); Serial.println(value);
     return;
   }
-
-  for (int s = 0; s < NUM_SEGMENTS; s++) {
+  for (int s = 0; s < 7; s++) {
     int pulse = DIGIT_TO_SEGMENT[value][s] ? SERVO_ON : SERVO_OFF;
     pwm.writeMicroseconds(SERVO_CHANNELS[digitIndex][s], pulse);
     delay(50);
   }
 }
 
-void showTime(int hour, int minute) {
-  // Normalize hour safely
+void showTime(int hour, int minute){
   int h = hour % 24;
   if (h < 0) h += 24;
 
-  // Convert to 12-hour display
+  // Convert to 12-hour display if you want 12-hour format:
   int displayHour = h % 12;
   if (displayHour == 0) displayHour = 12;
 
-  showDigit(pwmHours, 0, displayHour / 10);
-  showDigit(pwmHours, 1, displayHour % 10);
+  showDigit(pwmHours, 0, displayHour / 10);  // tens
+  showDigit(pwmHours, 1, displayHour % 10);  // ones
 
   showDigit(pwmMinutes, 0, minute / 10);
   showDigit(pwmMinutes, 1, minute % 10);
@@ -104,17 +100,17 @@ void connectToWiFi() {
 void setup() {
   Serial.begin(115200);
   delay(1000);
-
   Wire.begin();
-  Wire.setClock(100000);
+  Wire.setClock(100000);  // force 100 kHz
   Wire.setWireTimeout(3000, true);
 
+  // Initialize PCA9685 stuff first
   pwmHours.begin();
   pwmMinutes.begin();
   pwmHours.setPWMFreq(50);
   pwmMinutes.setPWMFreq(50);
 
-  // Initialize servos ON
+  // Now it's safe to writeMicroseconds to them
   for (int d = 0; d < NUM_DIGITS; d++) {
     for (int s = 0; s < NUM_SEGMENTS; s++) {
       pwmHours.writeMicroseconds(SERVO_CHANNELS[d][s], SERVO_ON);
@@ -125,7 +121,6 @@ void setup() {
   }
   delay(1000);
 
-  // Initialize servos OFF
   for (int d = 0; d < NUM_DIGITS; d++) {
     for (int s = 0; s < NUM_SEGMENTS; s++) {
       pwmHours.writeMicroseconds(SERVO_CHANNELS[d][s], SERVO_OFF);
@@ -148,6 +143,7 @@ void setup() {
 /* ===================== LOOP ===================== */
 
 void loop() {
+  static int lastHour = -1;
   static int lastMinute = -1;
 
   // Periodic NTP resync
@@ -159,19 +155,18 @@ void loop() {
   RTCTime now;
   RTC.getTime(now);
 
-  int hour = now.getHour();     // 0–23
+  int hour = now.getHour(); // 0–23
   int minute = now.getMinutes();
 
-  if (minute != lastMinute) {
-    lastMinute = minute;
 
-    Serial.print("Displaying time: ");
-    Serial.print(hour);
-    Serial.print(":");
-    Serial.println(minute);
+    if (minute != lastMinute) {
+      lastMinute = minute;
 
-    showTime(hour, minute);
-  }
+      Serial.print("Displaying minutes: ");
+      Serial.println(minute);
+
+      showTime(hour-12, minute);
+    }
 
   delay(500);
 }
