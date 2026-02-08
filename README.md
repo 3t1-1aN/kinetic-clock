@@ -44,4 +44,4 @@ The system uses servo motors to actuate 3D-printed segments that form digits in 
 
 ## Project Status
 
-Multiple digits are currently functional and synchronized with real-time data.
+clock currently synchronizes with real-time data and displays time.
