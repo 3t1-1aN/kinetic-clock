@@ -10,6 +10,12 @@
 
 ![Kinetic Clock Project back](https://github.com/user-attachments/assets/a01bc7a2-b913-4124-be9c-ac0fb6765c09)
 
+### final:
+
+https://github.com/user-attachments/assets/aa5084f3-80f1-49cf-9d3b-b7fa938c8dbd
+
+
+
 ## Project Overview
 
 The kinetic-clock is an innovative mechanical version of the classic digital clock that combines traditional digital clock aesthetics with modern mechanical engineering principles.
