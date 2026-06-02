@@ -32,4 +32,4 @@ The system uses servo motors to actuate 3D-printed segments that form digits in 
 
 ## Project Status
 
-clock currently synchronizes with real-time data and displays time.
+Completed. clock synchronizes with real-time data and displays time. It has a functional web app that allows any user on the same network to be able to start a countdown time, stopwatch, alarm, or move back to the real time clock
