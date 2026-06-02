@@ -2,7 +2,7 @@
 
 **A mechanical reinterpretation of the classic 7-segment digital clock using 3D-printed servo-driven segments.**
 
-<img width="4032" height="2268" alt="PXL_20260602_212719341 PORTRAIT" src="https://github.com/user-attachments/assets/6d89f24b-ae67-43f3-8193-8448956b8ed5" />
+<img width="4032" height="2268" alt="PXL_20260602_212719341 PORTRAIT" src="https://github.com/user-attachments/assets/1526e2cf-13b6-42cb-97e3-b1f1f68f476c" />
 
 ## Project Overview
 
