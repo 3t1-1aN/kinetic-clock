@@ -7,7 +7,10 @@ const char INDEX_HTML[] = R"=====(
     body { font-family: sans-serif; text-align: center; background: #f0f2f5; padding: 20px; }
     .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
     .btn { padding: 12px 20px; font-size: 14px; margin: 5px; cursor: pointer; border: none; border-radius: 8px; color: white; font-weight: bold; }
-    .blue { background: #007bff; } .green { background: #28a745; } .red { background: #dc3545; } .orange { background: #fd7e14; }
+    .blue { background: #007bff; }
+    .green { background: #28a745; }
+    .red { background: #dc3545; }
+    .orange { background: #fd7e14; }
     input { padding: 10px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; width: 80%; margin-bottom: 10px; }
     h3 { margin-top: 20px; color: #333; border-top: 1px solid #eee; padding-top: 15px; }
   </style>
@@ -15,8 +18,11 @@ const char INDEX_HTML[] = R"=====(
 <body>
   <div class="card">
     <h2>Mechanical Clock</h2>
-    <a href="/CLOCK"><button class="btn blue">REAL-TIME CLOCK</button></a>
-    
+
+    <a href="/CLOCK">
+      <button class="btn blue">REAL-TIME CLOCK</button>
+    </a>
+
     <h3>Stopwatch</h3>
     <a href="/SW_START"><button class="btn green">START</button></a>
     <a href="/SW_STOP"><button class="btn red">STOP</button></a>
@@ -36,7 +42,10 @@ const char INDEX_HTML[] = R"=====(
       <br>
       <button type="submit" class="btn green">SET ALARM</button>
     </form>
-    <a href="/OFF"><button class="btn red">STOP ALARM / RESET MODE</button></a>
+
+    <a href="/OFF">
+      <button class="btn red">STOP ALARM / RESET MODE</button>
+    </a>
   </div>
 </body>
 </html>
