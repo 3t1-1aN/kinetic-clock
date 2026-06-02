@@ -2,19 +2,7 @@
 
 **A mechanical reinterpretation of the classic 7-segment digital clock using 3D-printed servo-driven segments.**
 
-![Kinetic Clock Project](https://github.com/user-attachments/assets/700a77c6-e80a-44d7-ac20-5e9436f11dc5)
-
-### 2 months later...
-
-![Kinetic Clock Project front](https://github.com/user-attachments/assets/b48bde54-1429-4b01-8a69-73d9434bc8bd)
-
-![Kinetic Clock Project back](https://github.com/user-attachments/assets/a01bc7a2-b913-4124-be9c-ac0fb6765c09)
-
-### final:
-
-https://github.com/user-attachments/assets/aa5084f3-80f1-49cf-9d3b-b7fa938c8dbd
-
-
+<img width="4032" height="2268" alt="PXL_20260602_212719341 PORTRAIT" src="https://github.com/user-attachments/assets/6d89f24b-ae67-43f3-8193-8448956b8ed5" />
 
 ## Project Overview
 
