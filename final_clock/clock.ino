@@ -35,6 +35,9 @@ const int SERVO_CHANNELS[NUM_DIGITS][NUM_SEGMENTS] = {
 const int SERVO_ON  = 1700;
 const int SERVO_OFF = 2500;
 
+static int lastClockH = -1;
+static int lastClockM = -1;
+
 int lastH10 = -99;
 int lastH1  = -99;
 int lastM10 = -99;
@@ -91,6 +94,16 @@ int alH = -1, alM = -1;
 bool alEnabled = false;
 
 /* ===================== DISPLAY FUNCTIONS ===================== */
+
+void resetDisplayCache() {
+  lastH10 = -99;
+  lastH1  = -99;
+  lastM10 = -99;
+  lastM1  = -99;
+
+  lastClockH = -1;
+  lastClockM = -1;
+}
 
 // Write a single servo and wait SERVO_STAGGER_MS before the next one.
 // This spreads the inrush current across time instead of spiking all at once.
@@ -293,6 +306,8 @@ void updateRTC() {
   Serial.println(verify.getSeconds());
 
   Serial.println("====================");
+
+  resetDisplayCache();
 }
 
 bool wifiConnected = false;
@@ -333,7 +348,7 @@ void connectToWiFi() {
 
     currentMode = 4;
     cdSeconds = 120;
-    cdLastMillis += 1000;
+    cdLastMillis = millis();
   }
 }
 
@@ -378,6 +393,7 @@ void setup() {
   timeClient.begin();
   timeClient.setUpdateInterval(60000);
   updateRTC();
+  lastSync = millis();
 }
 
 /* ===================== LOOP ===================== */
@@ -398,10 +414,17 @@ void loop() {
         }
       }
 
-      if (req.indexOf("GET /CLOCK") != -1) currentMode = 0;
-      if (req.indexOf("GET /SW_START") != -1) { currentMode = 1; swStart = millis(); swRunning = true; }
+      if (req.indexOf("GET /CLOCK") != -1) {
+        currentMode = 0; 
+        resetDisplayCache();
+      }
+      if (req.indexOf("GET /SW_START") != -1) { currentMode = 1; resetDisplayCache(); swStart = millis(); swRunning = true; }
       if (req.indexOf("GET /SW_STOP") != -1) { swElapsed += millis() - swStart; swRunning = false; }
-      if (req.indexOf("GET /SW_RESET") != -1) { swElapsed = 0; swStart = millis(); }
+      if (req.indexOf("GET /SW_RESET") != -1) { 
+        swElapsed = 0; 
+        swStart = millis(); 
+        resetDisplayCache();
+      }
 
       if (req.indexOf("GET /SET_CD") != -1) {
         int m = req.substring(req.indexOf("m=")+2, req.indexOf("&s=")).toInt();
@@ -409,6 +432,7 @@ void loop() {
         cdSeconds = (m * 60) + s;
         cdLastMillis = millis();
         currentMode = 2;
+        resetDisplayCache();
       }
       if (req.indexOf("GET /SET_ALARM") != -1) {
         int tIdx = req.indexOf("atime=");
@@ -427,6 +451,7 @@ void loop() {
       if (req.indexOf("GET /OFF") != -1) {
         alEnabled = false;
         currentMode = 0;
+        resetDisplayCache();
         Serial.println("Alarm disabled");
     }
       client.println("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n");
@@ -438,18 +463,26 @@ void loop() {
   // Handle Logic
   static int lastValL = -1, lastValR = -1;
 
-  updateRTC();
-  lastSync = millis();
+  // Periodic NTP sync (every 10 minutes)
+  if (wifiConnected && millis() - lastSync >= syncInterval) {
+    updateRTC();
+    lastSync = millis();
+  }
 
   RTCTime now;
   RTC.getTime(now);
 
   // Alarm Check
-  if (alEnabled && now.getHour() == alH && now.getMinutes() == alM) currentMode = 3; alEnabled = false; Serial.println("ALARM TRIGGERED");
+  if (alEnabled && now.getHour() == alH && now.getMinutes() == alM) {
+    currentMode = 3;
+    alEnabled = false;
+    Serial.println("ALARM TRIGGERED");
+  }
 
   if (currentMode == 0) { // Clock Mode
-    if (now.getMinutes() != lastValR) {
-      lastValR = now.getMinutes();
+    if (now.getHour() != lastClockH || now.getMinutes() != lastClockM) {
+      lastClockH = now.getHour();
+      lastClockM = now.getMinutes();
       showTime(now.getHour(), now.getMinutes());
     }
   } 
@@ -489,6 +522,7 @@ void loop() {
 
   else if (currentMode == 3) {
     slotMachineAnimation();
+    resetDisplayCache();
     currentMode = 0;
   }
 
@@ -516,3 +550,4 @@ void loop() {
   }
 
   delay(100);
+}
